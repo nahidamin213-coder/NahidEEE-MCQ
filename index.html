@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0">
+
+<title>
+Advanced MCQ File Library
+</title>
+
+<style>
+
+/* =========================
+BODY
+========================= */
+  #viewerPage{
+
+overflow:auto;
+
+-webkit-overflow-scrolling:
+touch;
+
+}
+
+#viewer{
+
+min-height:100vh;
+
+}
+
+body{
+
+margin:0;
+padding:0;
+
+font-family:
+Segoe UI,sans-serif;
+
+background:#111;
+color:white;
+
+}
+
+/* =========================
+TOP BAR
+========================= */
+
+.topbar{
+
+background:#1c1c1c;
+
+padding:15px;
+
+text-align:center;
+
+font-size:26px;
+font-weight:bold;
+
+color:gold;
+
+position:sticky;
+top:0;
+z-index:999;
+
+box-shadow:
+0 2px 10px rgba(0,0,0,0.5);
+
+}
+
+/* =========================
+CONTAINER
+========================= */
+
+.container{
+
+padding:15px;
+
+}
+
+/* =========================
+UPLOAD PANEL
+========================= */
+
+.uploadPanel{
+
+background:#222;
+
+padding:15px;
+
+border-radius:12px;
+
+margin-bottom:20px;
+
+}
+
+label{
+
+display:block;
+
+margin-top:10px;
+margin-bottom:5px;
+
+font-weight:bold;
+
+color:#ffda6b;
+
+}
+
+input[type="text"],
+input[type="file"]{
+
+width:100%;
+
+padding:10px;
+
+border:none;
+
+border-radius:8px;
+
+box-sizing:border-box;
+
+font-size:16px;
+
+}
+
+/* =========================
+BUTTONS
+========================= */
+
+button{
+
+padding:10px 15px;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+margin-top:10px;
+
+}
+
+.uploadBtn{
+
+background:#00a86b;
+color:white;
+
+}
+
+.backBtn{
+
+background:#f44336;
+color:white;
+
+margin-bottom:15px;
+
+}
+
+.searchBtn{
+
+background:#2196F3;
+color:white;
+
+}
+
+.refreshBtn{
+
+background:#ff9800;
+color:white;
+
+}
+
+/* =========================
+HOME PAGE
+========================= */
+
+#homePage{
+
+display:grid;
+
+grid-template-columns:
+repeat(auto-fit,minmax(140px,1fr));
+
+gap:15px;
+
+}
+
+/* =========================
+CATEGORY CARD
+========================= */
+
+.card{
+
+height:120px;
+
+background:#222;
+
+border-radius:18px;
+
+display:flex;
+
+align-items:center;
+justify-content:center;
+
+font-size:24px;
+font-weight:bold;
+
+cursor:pointer;
+
+transition:0.3s;
+
+box-shadow:
+0 5px 10px rgba(0,0,0,0.4);
+
+text-align:center;
+
+padding:10px;
+
+}
+
+.card:hover{
+
+transform:scale(1.05);
+
+background:#333;
+
+}
+
+/* =========================
+FILE LIST
+========================= */
+
+.fileItem{
+
+background:#222;
+
+padding:15px;
+
+border-radius:12px;
+
+margin-bottom:12px;
+
+}
+
+.fileTitle{
+
+font-size:20px;
+font-weight:bold;
+
+color:#ffda6b;
+
+margin-bottom:10px;
+
+}
+
+/* =========================
+ACTION BUTTONS
+========================= */
+
+.actionBtns button{
+
+margin-right:10px;
+
+}
+
+/* =========================
+VIEWER
+========================= */
+
+#viewerPage{
+
+display:none;
+
+position:fixed;
+
+inset:0;
+
+background:white;
+
+z-index:99999;
+
+}
+
+#viewer{
+
+width:100%;
+height:100%;
+border:none;
+
+}
+
+/* =========================
+SEARCH
+========================= */
+
+.searchBox{
+
+margin-top:20px;
+margin-bottom:20px;
+
+}
+
+.searchBox input{
+
+margin-bottom:10px;
+
+}
+
+/* =========================
+HIDDEN
+========================= */
+
+.hidden{
+
+display:none;
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+
+📚 EEE & Job MCQ Library
+
+</div>
+
+<div class="container">
+
+<!-- ======================
+UPLOAD PANEL
+====================== -->
+
+<div class="uploadPanel">
+
+<label>
+Select HTML File
+</label>
+
+<input type="file"
+id="fileInput"
+accept=".html">
+
+<label>
+File Name
+</label>
+
+<input type="text"
+id="fileName"
+placeholder="Example:
+ ইসলাম">
+
+<label>
+Category
+</label>
+
+<input type="text"
+id="categoryInput"
+placeholder="Example:
+সূরা">
+
+<label>
+Sub Category
+</label>
+
+<input type="text"
+id="subCategoryInput"
+placeholder="Example:
+ফাতিহা">
+
+<button class="uploadBtn"
+id="uploadBtn">
+
+Upload File
+
+</button>
+  <!--আপলোড বাটনের লোডিং সিস্টেম দেখার জন্য  -->
+  <div id="uploadStatus"
+style="
+margin-top:10px;
+font-weight:bold;
+color:#00ff99;
+">
+</div> <!--শেষ লাইন -->
+
+</div>
+
+<!-- ======================
+SEARCH
+====================== -->
+
+<div class="searchBox">
+
+<input type="text"
+id="searchInput"
+placeholder="Search anything...">
+
+<button class="searchBtn"
+id="searchBtn">
+
+Search
+
+</button>
+
+<button class="refreshBtn"
+id="refreshBtn">
+
+Refresh
+
+</button>
+  <!-- change password এর Btn -->
+  <button
+id="changePasswordBtn"
+style="
+background:#9C27B0;
+color:white;
+">
+Change Password
+</button>
+  <!--শেষ লাইন  -->
+
+</div>
+
+<!-- ======================
+HOME PAGE
+====================== -->
+
+<div id="homePage">
+
+</div>
+
+<!-- ======================
+SUB CATEGORY PAGE
+====================== -->
+
+<div id="subCategoryPage"
+class="hidden">
+
+<button class="backBtn"
+onclick="goHome()">
+
+⬅ Back
+
+</button>
+
+<div id="subCategoryList">
+
+</div>
+
+</div>
+
+<!-- ======================
+FILE PAGE
+====================== -->
+
+<div id="filePage"
+class="hidden">
+
+<button class="backBtn"
+onclick="goSubCategory()">
+
+⬅ Back
+
+</button>
+
+<div id="fileList">
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ======================
+VIEWER
+====================== -->
+
+<div id="viewerPage">
+
+<button class="backBtn"
+style="
+position:fixed;
+top:15px;
+right:15px;
+z-index:999999;
+"
+onclick="closeViewer()">
+
+Close
+
+</button>
+
+<iframe id="viewer"
+style="
+width:100%;
+height:100%;
+border:none;
+background:white;
+">
+</iframe>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module">
+
+/* =========================
+FIREBASE IMPORT
+========================= */
+
+import {
+
+initializeApp
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+
+getFirestore,
+
+collection,
+
+addDoc,
+
+getDocs,
+
+deleteDoc,
+
+doc,
+
+updateDoc
+
+}
+
+from
+
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* =========================
+FIREBASE CONFIG
+========================= */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD5B4w6U7mCX2auzCBA7LksKRThR_sIgpQ",
+  authDomain: "gen-lang-client-0337985071.firebaseapp.com",
+  projectId: "gen-lang-client-0337985071",
+  storageBucket: "gen-lang-client-0337985071.firebasestorage.app",
+  messagingSenderId: "451129426509",
+  appId: "1:451129426509:web:7d8652f684620d271c1204",
+  measurementId: "G-94EKSKLTB9"
+};
+
+
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getFirestore(app);
+const supabaseUrl = "https://yixkarsciqesdfygjgjx.supabase.co";
+const supabaseKey = "sb_publishable_peaAaCQNVzNb8OOVIKFJFw_om1XUO9o";
+
+const supabase = window.supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+);
+/* =========================
+ELEMENTS
+========================= */
+
+const fileInput =
+document.getElementById(
+"fileInput"
+);
+
+const fileName =
+document.getElementById(
+"fileName"
+);
+
+const categoryInput =
+document.getElementById(
+"categoryInput"
+);
+
+const subCategoryInput =
+document.getElementById(
+"subCategoryInput"
+);
+/*JS এর অংশ */
+const uploadBtn =
+document.getElementById(
+"uploadBtn"
+);
+/*আপলোড হচ্ছে কিনা দেখার জন্য  বাটন এর অংশ   */
+const uploadStatus =
+document.getElementById(
+"uploadStatus"
+);  /*শেষ লাইন*/
+const homePage =
+document.getElementById(
+"homePage"
+);
+
+const subCategoryPage =
+document.getElementById(
+"subCategoryPage"
+);
+
+const subCategoryList =
+document.getElementById(
+"subCategoryList"
+);
+
+const filePage =
+document.getElementById(
+"filePage"
+);
+
+const fileList =
+document.getElementById(
+"fileList"
+);
+
+const viewerPage =
+document.getElementById(
+"viewerPage"
+);
+
+const viewer =
+document.getElementById(
+"viewer"
+);
+
+const searchInput =
+document.getElementById(
+"searchInput"
+);
+  /*change password কে ধরার জন্য Js এ এটা যোগ করা হয়েছে */
+  const changePasswordBtn =
+
+document.getElementById(
+"changePasswordBtn"
+);
+  /*শেষ লাইন  */
+
+let allFiles = [];
+
+let currentCategory = "";
+
+let currentSubCategory = "";
+  /* =========================
+ADMIN PASSWORD
+========================= */ 
+/* =========================
+ADMIN PASSWORD SYSTEM
+========================= */
+
+let ADMIN_PASSWORD =
+
+localStorage.getItem(
+"adminPassword"
+)
+
+||
+
+"N@hid53421";
+
+/* =========================
+UPLOAD FILE
+========================= */
+
+uploadBtn.onclick =
+async ()=>{
+  /*upload দিতে চাইলে পাসওয়ার্ড চাইবে তার জন্য */
+/* PASSWORD CHECK */
+
+const pass =
+
+prompt(
+"Enter Admin Password"
+);
+
+if(
+pass !== ADMIN_PASSWORD
+){
+
+alert(
+"Wrong Password!"
+);
+
+return;
+
+}
+  /*শেষ লাইন */
+const file =
+fileInput.files[0];
+
+if(!file){
+
+alert(
+"Select File"
+);
+
+return;
+
+}
+
+/* LOADING START */
+
+uploadBtn.disabled =
+true;
+
+uploadBtn.textContent =
+"Uploading...";
+
+uploadStatus.innerHTML =
+"⏳ Upload Starting...";
+
+/* FILE READER */
+
+const reader =
+new FileReader();
+
+reader.onload =
+async e=>{
+
+try{
+
+uploadStatus.innerHTML =
+"📖 Reading File...";
+
+const fileNameUnique = Date.now() + "_" + file.name;
+
+/* UPLOAD TO SUPABASE */
+uploadStatus.innerHTML = "☁ Uploading To Storage...";
+
+const { data, error } = await supabase.storage
+  .from("files")
+  .upload(fileNameUnique, file);
+
+if (error) {
+  console.error(error);
+
+  uploadStatus.innerHTML =
+  "❌ " + error.message;
+
+  uploadBtn.disabled = false;
+  uploadBtn.textContent = "Upload File";
+
+  return;
+}
+
+/* GET PUBLIC URL */
+const { data: urlData } = supabase.storage
+  .from("files")
+  .getPublicUrl(fileNameUnique);
+
+const fileUrl = urlData.publicUrl;
+
+/* SAVE METADATA TO FIRESTORE */
+uploadStatus.innerHTML = "📦 Saving Data...";
+
+const dataToSave = {
+  name: fileName.value.trim(),
+  category: categoryInput.value.trim(),
+  subcategory: subCategoryInput.value.trim(),
+  url: fileUrl,
+  created: Date.now()
+};
+
+await addDoc(
+  collection(db, "mcqFiles"),
+  dataToSave
+);
+/* VERIFY FROM FIREBASE */
+
+
+
+/* SUCCESS */
+
+uploadStatus.innerHTML =
+"✅ Upload Complete";
+
+uploadBtn.disabled =
+false;
+
+uploadBtn.textContent =
+"Upload File";
+  /*লোড ফাইভ ক্লিয়ার দেখানোর জন্য */
+  setTimeout(()=>{
+
+uploadStatus.innerHTML =
+"";
+
+},3000);/* শেষ এটা যুক্ত করা হয়েছে  */
+
+/* CLEAR INPUTS */
+
+fileInput.value = "";
+
+fileName.value = "";
+
+categoryInput.value = "";
+
+subCategoryInput.value = "";
+
+/* RELOAD FILES */
+
+await loadFiles(); /*আগে ছিল loadFiles();👈 এটাআপলোড ক্লিয়ারেন্স দেখানোর জন্য  */
+
+}
+catch(error){
+
+console.error(error);
+
+uploadStatus.innerHTML =
+"❌ Upload Error";
+
+uploadBtn.disabled =
+false;
+
+uploadBtn.textContent =
+"Upload File";
+
+}
+
+};
+
+reader.readAsText(file);
+
+};
+
+/* =========================
+LOAD FILES
+========================= */
+
+async function loadFiles(){
+
+homePage.innerHTML = "";
+
+const snapshot =
+await getDocs(
+collection(
+db,
+"mcqFiles"
+)
+);
+
+allFiles = [];
+
+snapshot.forEach(docItem=>{
+
+allFiles.push({
+
+id:docItem.id,
+
+...docItem.data()
+
+});
+
+});
+
+const categories =
+[...new Set(
+allFiles.map(
+f=>f.category
+)
+)];
+
+categories.forEach(cat=>{
+
+const card =
+document.createElement("div");
+
+card.className =
+"card";
+
+card.textContent =
+cat;
+
+card.onclick =
+()=>showSubCategories(cat);
+
+homePage.appendChild(
+card
+);
+
+});
+
+}
+
+/* =========================
+SHOW SUB CATEGORY
+========================= */
+
+window.showSubCategories =
+function(category){
+
+currentCategory =
+category;
+
+homePage.classList
+.add("hidden");
+
+subCategoryPage
+.classList
+.remove("hidden");
+
+subCategoryList
+.innerHTML = "";
+
+const filtered =
+allFiles.filter(
+f=>f.category===category
+);
+
+const subCats =
+[...new Set(
+filtered.map(
+f=>f.subcategory
+)
+)];
+
+subCats.forEach(sub=>{
+
+const card =
+document.createElement("div");
+
+card.className =
+"card";
+
+card.textContent =
+sub;
+
+card.onclick =
+()=>showFiles(sub);
+
+subCategoryList
+.appendChild(card);
+
+});
+
+};
+
+/* =========================
+SHOW FILES
+========================= */
+
+window.showFiles =
+function(sub){
+
+currentSubCategory =
+sub;
+
+subCategoryPage
+.classList
+.add("hidden");
+
+filePage.classList
+.remove("hidden");
+
+fileList.innerHTML = "";
+
+const filtered =
+allFiles.filter(
+f=>
+
+f.category===
+currentCategory
+
+&&
+
+f.subcategory===
+sub
+
+);
+
+filtered.forEach(file=>{
+
+const div =
+document.createElement("div");
+
+div.className =
+"fileItem";
+
+/* TITLE */
+
+const title =
+document.createElement("div");
+
+title.className =
+"fileTitle";
+
+title.textContent =
+file.name;
+
+/* ACTION AREA */
+
+const actions =
+document.createElement("div");
+
+actions.className =
+"actionBtns";
+
+/* OPEN BUTTON */
+
+const openBtn =
+document.createElement("button");
+
+openBtn.textContent =
+"Open";
+
+openBtn.onclick =
+()=>{
+
+window.open(
+file.url,
+"_blank"
+);
+
+};
+
+/* RENAME BUTTON */
+
+const renameBtn =
+document.createElement("button");
+
+renameBtn.textContent =
+"Rename";
+
+renameBtn.onclick =
+()=>{
+
+renameFile(
+file.id,
+file.name
+);
+
+};
+
+/* DELETE BUTTON */
+
+const deleteBtn =
+document.createElement("button");
+
+deleteBtn.textContent =
+"Delete";
+
+deleteBtn.onclick =
+()=>{
+
+deleteFile(
+file.id
+);
+
+};
+
+actions.appendChild(
+openBtn
+);
+
+actions.appendChild(
+renameBtn
+);
+
+actions.appendChild(
+deleteBtn
+);
+
+div.appendChild(
+title
+);
+
+div.appendChild(
+actions
+);
+
+fileList.appendChild(
+div
+);
+
+});
+
+};
+
+/* =========================
+OPEN FILE
+========================= */
+
+window.openFile =
+function(content){
+
+viewerPage.style
+.display = "block";
+
+const iframeDoc =
+viewer.contentDocument
+||
+viewer.contentWindow
+.document;
+
+const finalContent = `
+
+<style>
+
+html,
+body{
+
+margin:0;
+padding:0;
+
+width:100%;
+height:auto;
+
+overflow:auto !important;
+
+}
+
+*{
+
+max-width:100% !important;
+box-sizing:border-box;
+
+}
+
+img,
+table,
+iframe{
+
+max-width:100% !important;
+
+}
+
+</style>
+
+${content}
+
+`;
+
+iframeDoc.open();
+
+iframeDoc.write(
+finalContent
+);
+
+iframeDoc.close();
+
+};
+
+/* =========================
+CLOSE VIEWER
+========================= */
+
+window.closeViewer =
+function(){
+
+viewerPage.style
+.display = "none";
+
+viewer.src =
+"about:blank";
+
+};
+
+/* =========================
+RENAME
+========================= */
+
+window.renameFile =
+async function(id,name){
+  /* রিনেম করতে চাইলে পাসওয়ার্ড চাইবে তার জন্য */
+  /* PASSWORD CHECK */
+
+const pass =
+
+prompt(
+"Enter Admin Password"
+);
+
+if(
+pass !== ADMIN_PASSWORD
+){
+
+alert(
+"Wrong Password!"
+);
+
+return;
+
+}
+ /*শেষ লাইন  */
+
+const newName =
+prompt(
+"Enter new name",
+name
+);
+
+if(!newName) return;
+
+await updateDoc(
+
+doc(
+db,
+"mcqFiles",
+id
+),
+
+{
+name:newName
+}
+
+);
+
+loadFiles();
+
+showFiles(
+currentSubCategory
+);
+
+};
+
+/* =========================
+DELETE
+========================= */
+
+window.deleteFile =
+async function(id){
+ /* ডিলিট করতে চাইলে পাসওয়ার্ড যাবে তার জন্য */
+  /* PASSWORD CHECK */
+const pass =
+
+prompt(
+"Enter Admin Password"
+);
+
+if(
+pass !== ADMIN_PASSWORD
+){
+
+alert(
+"Wrong Password!"
+);
+
+return;
+
+}
+  /*শেষ লাইন */
+if(
+!confirm(
+"Delete file?"
+)
+)return;
+
+await deleteDoc(
+
+doc(
+db,
+"mcqFiles",
+id
+)
+
+);
+
+loadFiles();
+
+showFiles(
+currentSubCategory
+);
+
+};
+
+/* =========================
+GO HOME
+========================= */
+
+window.goHome =
+function(){
+
+subCategoryPage
+.classList
+.add("hidden");
+
+homePage.classList
+.remove("hidden");
+
+};
+
+/* =========================
+GO SUB CATEGORY
+========================= */
+
+window.goSubCategory =
+function(){
+
+filePage.classList
+.add("hidden");
+
+subCategoryPage
+.classList
+.remove("hidden");
+
+};
+
+/* =========================
+SEARCH
+========================= */
+
+document
+.getElementById(
+"searchBtn"
+)
+
+.onclick =
+()=>{
+
+const keyword =
+searchInput.value
+.trim()
+.toLowerCase();
+
+if(keyword===""){
+
+loadFiles();
+
+return;
+
+}
+const matched =
+allFiles.filter(f=>
+
+f.name
+.toLowerCase()
+.includes(keyword)
+
+);
+homePage.innerHTML = "";
+
+
+
+matched.forEach(file=>{
+
+const card =
+document.createElement("div");
+
+card.className =
+"card";
+
+card.textContent =
+file.name;
+
+card.onclick =
+()=>{
+
+window.open(
+file.url,
+"_blank"
+);
+
+};
+
+homePage.appendChild(
+card
+);
+
+});
+
+};
+
+/* =========================
+REFRESH
+========================= */
+
+document
+.getElementById(
+"refreshBtn"
+)
+
+.onclick =
+()=>{
+
+searchInput.value =
+"";
+
+loadFiles();
+
+};
+/*এ সমগ্র পাসওয়ার্ড চেইঞ্জ সিস্টেম এর জন্য  */
+  /* =========================
+CHANGE PASSWORD
+========================= */
+
+changePasswordBtn.onclick =
+()=>{
+
+/* OLD PASSWORD */
+
+const oldPass =
+
+prompt(
+"Enter Old Password"
+);
+
+if(
+oldPass !== ADMIN_PASSWORD
+){
+
+alert(
+"Wrong Old Password!"
+);
+
+return;
+
+}
+
+/* NEW PASSWORD */
+
+const newPass =
+
+prompt(
+"Enter New Password"
+);
+
+if(
+!newPass
+||
+newPass.trim()===""
+){
+
+alert(
+"Password Cannot Be Empty"
+);
+
+return;
+
+}
+
+/* SAVE PASSWORD */
+
+ADMIN_PASSWORD =
+newPass;
+
+localStorage.setItem(
+
+"adminPassword",
+
+newPass
+
+);
+
+alert(
+"Password Changed Successfully"
+);
+
+};
+  /*শেষ লাইন  */
+/* =========================
+INIT
+========================= */
+
+loadFiles();
+
+</script>
+
+</body>
+</html>
