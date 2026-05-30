@@ -778,10 +778,12 @@ const dataToSave = {
   created: Date.now()
 };
 
-await addDoc(
-  collection(db, "mcqFiles"),
-  dataToSave
-);
+await Promise.race([
+  addDoc(collection(db, "mcqFiles"), dataToSave),
+  new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("Firestore timeout")), 10000)
+  )
+]);
 /* VERIFY FROM FIREBASE */
 
 
