@@ -514,58 +514,11 @@ background:white;
 FIREBASE IMPORT
 ========================= */
 
-import {
-
-initializeApp
-
-}
-
-from
-
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-
-getFirestore,
-
-collection,
-
-addDoc,
-
-getDocs,
-
-deleteDoc,
-
-doc,
-
-updateDoc
-
-}
-
-from
-
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* =========================
 FIREBASE CONFIG
 ========================= */
-
-const firebaseConfig = {
-  apiKey: "AIzaSyD5B4w6U7mCX2auzCBA7LksKRThR_sIgpQ",
-  authDomain: "gen-lang-client-0337985071.firebaseapp.com",
-  projectId: "gen-lang-client-0337985071",
-  storageBucket: "gen-lang-client-0337985071.firebasestorage.app",
-  messagingSenderId: "451129426509",
-  appId: "1:451129426509:web:7d8652f684620d271c1204",
-  measurementId: "G-94EKSKLTB9"
-};
-
-
-const app =
-initializeApp(firebaseConfig);
-
-const db =
-getFirestore(app);
+  
 const supabaseUrl = "https://yixkarsciqesdfygjgjx.supabase.co";
 const supabaseKey = "sb_publishable_peaAaCQNVzNb8OOVIKFJFw_om1XUO9o";
 
@@ -728,105 +681,80 @@ uploadStatus.innerHTML =
 
 /* FILE READER */
 
-const reader =
-new FileReader();
+uploadBtn.onclick = async () => {
 
-reader.onload =
-async e=>{
+const pass = prompt("Enter Admin Password");
 
-try{
+if(pass !== ADMIN_PASSWORD){
+alert("Wrong Password!");
+return;
+}
 
-uploadStatus.innerHTML =
-"📖 Reading File...";
+const file = fileInput.files[0];
+
+if(!file){
+alert("Select File");
+return;
+}
+
+uploadBtn.disabled = true;
+uploadBtn.textContent = "Uploading...";
+uploadStatus.innerHTML = "Uploading...";
+
+try {
 
 const fileNameUnique = Date.now() + "_" + file.name;
 
-/* UPLOAD TO SUPABASE */
-uploadStatus.innerHTML = "☁ Uploading To Storage...";
+const { error } = await supabase.storage
+.from("files")
+.upload(fileNameUnique, file, {
+  contentType: "text/html"
+});
 
-const { data, error } = await supabase.storage
-  .from("files")
-  .upload(fileNameUnique, file);
-
-if (error) {
-  console.error(error);
-
-  uploadStatus.innerHTML =
-  "❌ " + error.message;
-
-  uploadBtn.disabled = false;
-  uploadBtn.textContent = "Upload File";
-
-  return;
+if(error){
+throw error;
 }
 
-/* GET PUBLIC URL */
 const { data: urlData } = supabase.storage
-  .from("files")
-  .getPublicUrl(fileNameUnique);
+.from("files")
+.getPublicUrl(fileNameUnique);
 
 const fileUrl = urlData.publicUrl;
 
-/* SAVE METADATA TO FIRESTORE */
-uploadStatus.innerHTML = "📦 Saving Data...";
-
 const dataToSave = {
-  name: fileName.value.trim(),
-  category: categoryInput.value.trim(),
-  subcategory: subCategoryInput.value.trim(),
-  url: fileUrl,
-  created: Date.now()
+name: fileName.value.trim(),
+category: categoryInput.value.trim(),
+subcategory: subCategoryInput.value.trim(),
+url: fileUrl,
+created: Date.now()
 };
 
-await Promise.race([
-  addDoc(collection(db, "mcqFiles"), dataToSave),
-  new Promise((_, reject) =>
-    setTimeout(() => reject(new Error("Firestore timeout")), 10000)
-  )
-]);
-/* VERIFY FROM FIREBASE */
+const { error: dbError } = await supabase
+.from("mcqFiles")
+.insert([dataToSave]);
 
+if(dbError){
+throw dbError;
+}
 
-
-/* SUCCESS */
-
-uploadStatus.innerHTML =
-"✅ Upload Complete";
-
-uploadBtn.disabled =
-false;
-
-uploadBtn.textContent =
-"Upload File";
-  /*লোড ফাইভ ক্লিয়ার দেখানোর জন্য */
-  setTimeout(()=>{
-
-uploadStatus.innerHTML =
-"";
-
-},3000);/* শেষ এটা যুক্ত করা হয়েছে  */
-
-/* CLEAR INPUTS */
+uploadStatus.innerHTML = "Uploaded Successfully";
 
 fileInput.value = "";
-
 fileName.value = "";
-
 categoryInput.value = "";
-
 subCategoryInput.value = "";
 
-/* RELOAD FILES */
+await loadFiles();
 
-await loadFiles(); /*আগে ছিল loadFiles();👈 এটাআপলোড ক্লিয়ারেন্স দেখানোর জন্য  */
+setTimeout(()=>{
+uploadStatus.innerHTML = "";
+},2000);
 
-}
-catch(error){
+} catch(err){
 
-console.error(error);
+uploadStatus.innerHTML = "Error: " + err.message;
 
-uploadStatus.innerHTML =
-"❌ " + (error.message || error);
+} finally {
 
 uploadBtn.disabled = false;
 uploadBtn.textContent = "Upload File";
@@ -834,8 +762,6 @@ uploadBtn.textContent = "Upload File";
 }
 
 };
-
-reader.readAsText(file);
 
 };
 
@@ -847,27 +773,20 @@ async function loadFiles(){
 
 homePage.innerHTML = "";
 
-const snapshot =
-await getDocs(
-collection(
-db,
-"mcqFiles"
-)
-);
+const { data, error } =
+await supabase
+.from("mcqFiles")
+.select("*");
 
-allFiles = [];
+if(error){
 
-snapshot.forEach(docItem=>{
+console.error(error);
 
-allFiles.push({
+return;
 
-id:docItem.id,
+}
 
-...docItem.data()
-
-});
-
-});
+allFiles = data || [];
 
 const categories =
 [...new Set(
@@ -1207,19 +1126,12 @@ name
 
 if(!newName) return;
 
-await updateDoc(
-
-doc(
-db,
-"mcqFiles",
-id
-),
-
-{
+await supabase
+.from("mcqFiles")
+.update({
 name:newName
-}
-
-);
+})
+.eq("id",id);
 
 loadFiles();
 
@@ -1261,15 +1173,10 @@ if(
 )
 )return;
 
-await deleteDoc(
-
-doc(
-db,
-"mcqFiles",
-id
-)
-
-);
+await supabase
+.from("mcqFiles")
+.delete()
+.eq("id",id);
 
 loadFiles();
 
@@ -1472,4 +1379,4 @@ loadFiles();
 </script>
 
 </body>
-</html>
+</html> 
