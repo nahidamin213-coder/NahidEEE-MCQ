@@ -826,13 +826,10 @@ catch(error){
 console.error(error);
 
 uploadStatus.innerHTML =
-"❌ Upload Error";
+"❌ " + (error.message || error);
 
-uploadBtn.disabled =
-false;
-
-uploadBtn.textContent =
-"Upload File";
+uploadBtn.disabled = false;
+uploadBtn.textContent = "Upload File";
 
 }
 
