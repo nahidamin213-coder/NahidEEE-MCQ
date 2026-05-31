@@ -632,52 +632,6 @@ localStorage.getItem(
 UPLOAD FILE
 ========================= */
 
-uploadBtn.onclick =
-async ()=>{
-  /*upload দিতে চাইলে পাসওয়ার্ড চাইবে তার জন্য */
-/* PASSWORD CHECK */
-
-const pass =
-
-prompt(
-"Enter Admin Password"
-);
-
-if(
-pass !== ADMIN_PASSWORD
-){
-
-alert(
-"Wrong Password!"
-);
-
-return;
-
-}
-  /*শেষ লাইন */
-const file =
-fileInput.files[0];
-
-if(!file){
-
-alert(
-"Select File"
-);
-
-return;
-
-}
-
-/* LOADING START */
-
-uploadBtn.disabled =
-true;
-
-uploadBtn.textContent =
-"Uploading...";
-
-uploadStatus.innerHTML =
-"⏳ Upload Starting...";
 
 /* FILE READER */
 
@@ -760,8 +714,6 @@ uploadBtn.disabled = false;
 uploadBtn.textContent = "Upload File";
 
 }
-
-};
 
 };
 
