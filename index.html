@@ -658,13 +658,13 @@ uploadStatus.innerHTML = "Uploading...";
 try {
 
 const fileNameUnique = Date.now() + "_" + file.name;
-
+console.log("START STORAGE UPLOAD");
 const { error } = await supabase.storage
 .from("files")
 .upload(fileNameUnique, file, {
   contentType: "text/html"
 });
-
+console.log("STORAGE UPLOAD FINISHED");
 if(error){
 throw error;
 }
