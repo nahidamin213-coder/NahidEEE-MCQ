@@ -674,7 +674,9 @@ const { data: urlData } = supabase.storage
 .getPublicUrl(fileNameUnique);
 
 const fileUrl = urlData.publicUrl;
-
+console.log(fileUrl);
+window.open(fileUrl, "_blank");
+  
 const dataToSave = {
 Name: fileName.value.trim(),
 Category: categoryInput.value.trim(),
@@ -889,10 +891,7 @@ openBtn.textContent =
 openBtn.onclick =
 ()=>{
 
-window.open(
-file.url,
-"_blank"
-);
+openFile(file.url);
 
 };
 
@@ -963,11 +962,13 @@ div
 OPEN FILE
 ========================= */
 
-window.openFile =
-function(content){
+window.openFile = function(url){
 
-viewerPage.style
-.display = "block";
+viewerPage.style.display = "block";
+
+viewer.src = url;
+
+};
 
 const iframeDoc =
 viewer.contentDocument
