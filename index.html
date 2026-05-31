@@ -676,9 +676,9 @@ const { data: urlData } = supabase.storage
 const fileUrl = urlData.publicUrl;
 
 const dataToSave = {
-name: fileName.value.trim(),
-category: categoryInput.value.trim(),
-subcategory: subCategoryInput.value.trim(),
+Name: fileName.value.trim(),
+Category: categoryInput.value.trim(),
+Subcategory: subCategoryInput.value.trim(),
 url: fileUrl,
 created: Date.now()
 };
@@ -743,7 +743,7 @@ allFiles = data || [];
 const categories =
 [...new Set(
 allFiles.map(
-f=>f.category
+f=>f.Category
 )
 )];
 
@@ -791,13 +791,13 @@ subCategoryList
 
 const filtered =
 allFiles.filter(
-f=>f.category===category
+f=>f.Category===category
 );
 
 const subCats =
 [...new Set(
 filtered.map(
-f=>f.subcategory
+f=>f.Subcategory
 )
 )];
 
@@ -845,13 +845,9 @@ const filtered =
 allFiles.filter(
 f=>
 
-f.category===
-currentCategory
-
+f.Category===currentCategory
 &&
-
-f.subcategory===
-sub
+f.Subcategory===sub
 
 );
 
@@ -872,7 +868,7 @@ title.className =
 "fileTitle";
 
 title.textContent =
-file.name;
+file.Name;
 
 /* ACTION AREA */
 
@@ -913,7 +909,7 @@ renameBtn.onclick =
 
 renameFile(
 file.id,
-file.name
+file.Name
 );
 
 };
@@ -1081,7 +1077,7 @@ if(!newName) return;
 await supabase
 .from("mcqFiles")
 .update({
-name:newName
+Name:newName
 })
 .eq("id",id);
 
@@ -1197,7 +1193,7 @@ return;
 const matched =
 allFiles.filter(f=>
 
-f.name
+f.Name
 .toLowerCase()
 .includes(keyword)
 
@@ -1215,7 +1211,7 @@ card.className =
 "card";
 
 card.textContent =
-file.name;
+file.Name;
 
 card.onclick =
 ()=>{
