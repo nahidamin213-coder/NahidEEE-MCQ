@@ -6,10 +6,12 @@
 <meta name="viewport"
 content="width=device-width,
 initial-scale=1.0">
+  
 
 <title>
 Advanced MCQ File Library
 </title>
+  
 
 <style>
 
@@ -67,9 +69,39 @@ z-index:999;
 
 box-shadow:
 0 2px 10px rgba(0,0,0,0.5);
-
+  
 }
 
+  .menuIcon{
+position:absolute;
+right:15px;
+top:10px;
+font-size:30px;
+cursor:pointer;
+color:white;
+}
+
+.adminMenu{
+position:absolute;
+right:15px;
+top:55px;
+background:#222;
+padding:10px;
+border-radius:10px;
+display:flex;
+flex-direction:column;
+gap:10px;
+z-index:9999;
+}
+
+.adminMenu button{
+background:#333;
+color:white;
+padding:8px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
 /* =========================
 CONTAINER
 ========================= */
@@ -327,10 +359,16 @@ display:none;
 <body>
 
 <div class="topbar">
-
-📚 EEE & Job MCQ Library
-
+  <div class="menuIcon" id="menuIcon">☰</div>
+<div class="adminMenu hidden" id="adminMenu">
+  <button id="adminLoginBtn">Admin Panel</button>
+  <button id="logoutAdminBtn">Logout</button>
 </div>
+  
+📚 EEE & Job MCQ Library
+  						Engr.Md.Nahid Amin
+
+</div> 
 
 <div class="container">
 
@@ -338,7 +376,7 @@ display:none;
 UPLOAD PANEL
 ====================== -->
 
-<div class="uploadPanel">
+<div class="uploadPanel hidden" id="uploadPanel">
 
 <label>
 Select HTML File
@@ -418,15 +456,18 @@ Refresh
   <!-- change password এর Btn -->
   <button
 id="changePasswordBtn"
+class="hidden"
 style="
 background:#9C27B0;
 color:white;
 ">
+    
 Change Password
 </button>
+  
   <!--শেষ লাইন  -->
-
 </div>
+  
 
 <!-- ======================
 HOME PAGE
@@ -604,6 +645,10 @@ document.getElementById(
 document.getElementById(
 "changePasswordBtn"
 );
+  const uploadPanel =
+document.getElementById(
+"uploadPanel"
+);
   /*শেষ লাইন  */
 
 let allFiles = [];
@@ -614,6 +659,69 @@ let currentSubCategory = "";
   /* =========================
 ADMIN PASSWORD
 ========================= */ 
+  const menuIcon = document.getElementById("menuIcon");
+const adminMenu = document.getElementById("adminMenu");
+const adminLoginBtn = document.getElementById("adminLoginBtn");
+const logoutAdminBtn = document.getElementById("logoutAdminBtn");
+
+let isAdminLoggedIn = false;
+
+/* MENU OPEN CLOSE */
+menuIcon.onclick = () => {
+  adminMenu.classList.toggle("hidden");
+};
+
+/* ADMIN LOGIN */
+adminLoginBtn.onclick = () => {
+
+const pass = prompt(
+"Enter Admin Password"
+);
+
+if(pass === ADMIN_PASSWORD){
+
+isAdminLoggedIn = true;
+
+uploadPanel.classList.remove(
+"hidden"
+);
+
+changePasswordBtn.classList.remove(
+"hidden"
+);
+
+alert(
+"Admin Access Granted"
+);
+
+}else{
+
+alert(
+"Wrong Password!"
+);
+
+}
+
+};
+
+/* LOGOUT */
+logoutAdminBtn.onclick = () => {
+
+isAdminLoggedIn = false;
+
+uploadPanel.classList.add(
+"hidden"
+);
+
+changePasswordBtn.classList.add(
+"hidden"
+);
+
+alert(
+"Logged out"
+);
+
+};
 /* =========================
 ADMIN PASSWORD SYSTEM
 ========================= */
@@ -637,11 +745,14 @@ UPLOAD FILE
 
 uploadBtn.onclick = async () => {
 
-const pass = prompt("Enter Admin Password");
+if(!isAdminLoggedIn){
 
-if(pass !== ADMIN_PASSWORD){
-alert("Wrong Password!");
+alert(
+"Admin Login Required"
+);
+
 return;
+
 }
 
 const file = fileInput.files[0];
@@ -657,7 +768,10 @@ uploadStatus.innerHTML = "Uploading...";
 
 try {
 
-const fileNameUnique = Date.now() + "_" + file.name;
+const safeName = file.name
+  .replace(/[^a-zA-Z0-9.\-_]/g, "_");
+
+const fileNameUnique = Date.now() + "_" + safeName;
 console.log("START STORAGE UPLOAD");
 const { error } = await supabase.storage
 .from("files")
@@ -675,7 +789,7 @@ const { data: urlData } = supabase.storage
 
 const fileUrl = urlData.publicUrl;
 console.log(fileUrl);
-window.open(fileUrl, "_blank");
+
   
 const dataToSave = {
 Name: fileName.value.trim(),
@@ -888,11 +1002,8 @@ document.createElement("button");
 openBtn.textContent =
 "Open";
 
-openBtn.onclick =
-()=>{
-
-openFile(file.url);
-
+openBtn.onclick = () => {
+  openFile(file.url);
 };
 
 /* RENAME BUTTON */
@@ -966,61 +1077,19 @@ window.openFile = function(url){
 
 viewerPage.style.display = "block";
 
-viewer.src = url;
+fetch(url)
+  .then(res => res.text())
+  .then(html => {
 
-};
+    const iframeDoc =
+      viewer.contentDocument ||
+      viewer.contentWindow.document;
 
-const iframeDoc =
-viewer.contentDocument
-||
-viewer.contentWindow
-.document;
+    iframeDoc.open();
+    iframeDoc.write(html);
+    iframeDoc.close();
 
-const finalContent = `
-
-<style>
-
-html,
-body{
-
-margin:0;
-padding:0;
-
-width:100%;
-height:auto;
-
-overflow:auto !important;
-
-}
-
-*{
-
-max-width:100% !important;
-box-sizing:border-box;
-
-}
-
-img,
-table,
-iframe{
-
-max-width:100% !important;
-
-}
-
-</style>
-
-${content}
-
-`;
-
-iframeDoc.open();
-
-iframeDoc.write(
-finalContent
-);
-
-iframeDoc.close();
+  });
 
 };
 
@@ -1048,18 +1117,10 @@ async function(id,name){
   /* রিনেম করতে চাইলে পাসওয়ার্ড চাইবে তার জন্য */
   /* PASSWORD CHECK */
 
-const pass =
-
-prompt(
-"Enter Admin Password"
-);
-
-if(
-pass !== ADMIN_PASSWORD
-){
+if(!isAdminLoggedIn){
 
 alert(
-"Wrong Password!"
+"Admin Login Required"
 );
 
 return;
@@ -1098,18 +1159,10 @@ window.deleteFile =
 async function(id){
  /* ডিলিট করতে চাইলে পাসওয়ার্ড যাবে তার জন্য */
   /* PASSWORD CHECK */
-const pass =
-
-prompt(
-"Enter Admin Password"
-);
-
-if(
-pass !== ADMIN_PASSWORD
-){
+  if(!isAdminLoggedIn){
 
 alert(
-"Wrong Password!"
+"Admin Login Required"
 );
 
 return;
@@ -1216,11 +1269,6 @@ file.Name;
 
 card.onclick =
 ()=>{
-
-window.open(
-file.url,
-"_blank"
-);
 
 };
 
